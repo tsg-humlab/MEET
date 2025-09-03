@@ -1,2 +1,2 @@
-# MigrationExtractionTool
-The Migration Extraction Tool (MET) extracts data on migration out of IDS longitudinal datasets
+# Migration Episode Extraction Tool
+The Migration Episode Extraction Tool (MEET) extracts data on migration out of IDS longitudinal datasets
