@@ -1,4 +1,4 @@
-# Step 6. Import IDS tables in R as data frames
+# Step 5. Import IDS tables in R as data frames
 
 # In this step four IDS tables will be imported in R as data frames: 
 # INDIVIDUAL, INDIV_CONTEXT, CONTEXT_CONTEXT and CONTEXT. 
@@ -14,7 +14,7 @@ library(dplyr)
 library(tidyr)
 library(data.table)
 
-# Step 6.1 Import INDIVIDUAL table
+# Step 5.1 Import INDIVIDUAL table
 
 # The table is imported in R as a data frame and the column Id_I is changed:
 
@@ -23,7 +23,7 @@ INDIVIDUAL <- fread("INDIVIDUAL_CLEAN.txt", encoding="Latin-1") %>%
   mutate (Value_Id_C = as.numeric(gsub(",00", "", Value_Id_C)))
 
 
-# Step 6.2 Import INDIV_CONTEXT table
+# Step 5.2 Import INDIV_CONTEXT table
 
 # The table is imported in R as a data frame and the columns Id_I and Id_C are changed:
 
@@ -32,7 +32,7 @@ INDIV_CONTEXT <- fread("INDIV_CONTEXT.txt", encoding="Latin-1") %>%
   mutate (Id_C = as.numeric(gsub(",00", "", Id_C)))
 
 
-# Step 6.3 Import CONTEXT_CONTEXT table
+# Step 5.3 Import CONTEXT_CONTEXT table
 
 # The table is imported in R as a data frame and the columns Id_C_1 and Id_C_2 are changed:
 
@@ -41,7 +41,7 @@ CONTEXT_CONTEXT <- fread("CONTEXT_CONTEXT.txt", encoding="Latin-1") %>%
   mutate (Id_C_2 = as.numeric(gsub(",00", "", Id_C_2)))
 
 
-# Step 6.4 Import CONTEXT table
+# Step 5.4 Import CONTEXT table
 
 # The table is imported in R as a data frame and the column Id_C is changed:
 
