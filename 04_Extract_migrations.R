@@ -1,4 +1,4 @@
-# Steps 7.2 - 20
+# Steps 7.2 - 16.8
 
 # This script creates a data frame in which the migration histories of all RPs are stored.  
 # This MIGRATION_COMPLETE data frame is the basis of the Migration Episode File (MEF), that is constructed
