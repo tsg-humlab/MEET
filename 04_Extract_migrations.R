@@ -40,6 +40,7 @@ CONTEXT_CONTEXT_CLEAN <- CONTEXT_CONTEXT %>%
   subset(Relation == "Address and Municipality") %>% 
   select(Id_C_1, Id_C_2_nw) 
 
+
 # Step 10. Add Id_C_2 codes to the data frame
 
 # The next step is to use the Id_C codes from INDIV_CONTEXT_RP and the Id_C_1 codes of CONTEXT_CONTEXT_CLEAN 
@@ -73,7 +74,7 @@ CONTEXT_CLEAN <- CONTEXT %>%
 
 CONTEXT_RP <- CONTEXT_CONTEXT_RP %>% 
   inner_join(CONTEXT_CLEAN, by =  c("Id_C_2_nw" = "Id_C_clean")) %>%
-  rename(Id_C_2 = Id_C_2_nw) %>%	# Rename de extra column
+  rename(Id_C_2 = Id_C_2_nw) %>%	
   select(Id_I, Id_C, Id_C_2, Municipality, Start_day, Start_month, Start_year) %>%
   arrange(Id_I, Start_year, Start_month, Start_day)
 
@@ -85,6 +86,7 @@ CONTEXT_RP <- CONTEXT_CONTEXT_RP %>%
 # This will be done by counting the sequences of the municipalities (per ID) in the column Municipality 
 # and add the sequences to Count_1. 
 # This new column will help to find the first address of each sequence of addresses (where Count_1 = 1). 
+
 
 # 13.1 Sort data frame
 
@@ -218,8 +220,8 @@ CONTEXT_RP_CONTEXTS <- CONTEXT_RP_COUNT_1 %>%
 # migrate once or more. 
 
 # The data frame with migrations is again split into two data frames, one with the records of the municipalities where 
-# the RP has migrated from (MIGRATION_MUNICIPALITIES_1) and one with the municipalities 
-# where the RP has migrated to (MIGRATION_MUNICIPALITIES_2). 
+# the RP has migrated from (MIGRATION_MUNICIPALITIES_ORIG) and one with the municipalities 
+# where the RP has migrated to (MIGRATION_MUNICIPALITIES_DEST). 
 
 # 16.1 Add two new columns to the data frame that show per Id_I the sequences of the records and  
 # for each record the highest number of each sequence. 
@@ -249,15 +251,14 @@ MIGRATION_RP_NO <- CONTEXT_RP_CONTEXTS_COUNTS %>%
 # Most columns are filled in with "NA" but the Migration_sequence and Migration_total are filled in with "0". 
 
 MIGRATION_RP_NO <- MIGRATION_RP_NO %>% 
-  mutate (Id_I_D = NA) %>% 
-  mutate (Id_C_2_D = NA) %>% 
-  mutate (End_day = NA) %>% 
+  mutate (Id_I_D = NA) %>% # is dit goed? Waarom doe ik dit? OK dit is denk ik 
+  mutate (Id_C_2_D = NA) %>% # is dit goed? om eea recht te zetten later? _D is van Destination
+  mutate (End_day = NA) %>% # Dit df wordt later boven op het df met de migraties gezet
   mutate (End_month = NA) %>% 
   mutate (End_year = NA) %>% 
   mutate (Municipality_D = NA) %>% 
   mutate (Region_D = NA) %>% 
   mutate (Country_D = NA) %>%
-  
   mutate (Migration_sequence = 0) %>% 
   mutate (Migration_total = 0) %>% 
   mutate (Migration_type = NA)
@@ -291,13 +292,14 @@ MIGRATION_MUNICIPALITY_DEST <- MIGRATION_RP_YES %>%
 
 MIGRATION_MUNICIPALITY_ORIG <- MIGRATION_RP_YES %>% 
   subset(Count_3 != Count_4) %>% 
-  select (Id_I, Id_C, Id_C_2, Start_day, Start_month, Start_year, Municipality, Region, Country) 
+  select (Id_I, Id_C_2, Start_day, Start_month, Start_year, Municipality, Region, Country) 
 
 
 # Step 16.7 Combine the MIGRATION_MUNICIPALITY_ORIG and MIGRATION_MUNICIPALITY_DEST data frames 
 
-# In this step, the two data frames are combined into the MIGRATION_BI data frame, that shows for each RP
-# all migrations between municipalities, the origin on the left (Municipality) and the destination (Municipality_2) on the right. 
+# In this step, the two data frames are combined into the MIGRATION_ORIG_DEST data frame, 
+# that shows for each RP all migrations between municipalities, the origin on 
+# the left (Municipality) and the destination (Municipality_2) on the right. 
 # Three new columns are added to the data frame after this part.
 
 # The column Migration_sequence that shows for each RP the sequence of each migration
@@ -316,6 +318,7 @@ MIGRATION_ORIG_DEST <- bind_cols(MIGRATION_MUNICIPALITY_ORIG, MIGRATION_MUNICIPA
   mutate(Migration_total = tail(n())) %>%
   mutate(Migration_type = if_else(Country == Country_D, "Internal", "International")) 
 
+
 # Step 16.8. Combine the data frames MIGRATION_RP_NO and MIGRATION_ORIG_DEST
 
 # Now that both data frames have the same structure, it is possible to combine the two. 
@@ -325,7 +328,10 @@ MIGRATION_COMPLETE <- bind_rows(MIGRATION_RP_NO, MIGRATION_ORIG_DEST) %>%
   arrange(Id_I)
 
 # Afterwards some of the names of the fields can be altered in order to harmonize the names of the fields in the 
-# MIGRATION_COMPLETE data frame
+# MIGRATION_COMPLETE data frame, the sequence of the columns is also changed
 
 MIGRATION_COMPLETE <- MIGRATION_COMPLETE %>%
-  rename(Municipality_O = Municipality, Region_O = Region, Country_O = Country)
+  rename(Municipality_O = Municipality, Region_O = Region, Country_O = Country) %>%
+  select(Id_I, Municipality_O, Region_O, Country_O, Start_day, Start_month, Start_year,	
+         Municipality_D,	Region_D,	Country_D, End_day, End_month, End_year,
+         Migration_sequence, Migration_total, Migration_type)
