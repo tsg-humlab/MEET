@@ -2,12 +2,19 @@
 
 # To be able to extract all the migrations for the Research Persons (RPs), we need to first find the RPs.
 # This script asks the user how the Research Persons are marked in the IDS set that is used.
+# The user is first asked the Type and then the Value.
+
+# Below the type and value that are used in the HSN: 
+
+# Type: HSN_RESEARCH_PERSON
+# Value: HSN RP
 
 # Load packages
 
 library(dplyr)
 library(tidyr)
 library(data.table)
+
 
 # Step 7.1 Get the RPs
 

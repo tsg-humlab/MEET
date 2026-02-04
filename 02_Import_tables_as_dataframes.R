@@ -18,7 +18,7 @@ library(data.table)
 
 # The table is imported in R as a data frame and the column Id_I is changed:
 
-INDIVIDUAL <- fread("INDIVIDUAL_CLEAN.txt", encoding="Latin-1") %>% 
+INDIVIDUAL <- fread("INDIVIDUAL.txt", encoding="Latin-1") %>% 
   mutate (Id_I = as.numeric(gsub(",00", "", Id_I))) %>%  
   mutate (Value_Id_C = as.numeric(gsub(",00", "", Value_Id_C)))
 
